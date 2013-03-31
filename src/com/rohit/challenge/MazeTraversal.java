@@ -104,8 +104,13 @@ public class MazeTraversal {
 	}
 	
 	/**
+	 * Checks if the current node has already been visited
+	 * 
+	 * TODO Not a good way of doing it
 	 * 
 	 * @param node
+	 * @return <code>true</code> If the node has already been visited
+	 * 		   <code>false</code> If the node has not been visited yet
 	 */
 	boolean checkCycle(MazeNode mn)
 	{
@@ -119,8 +124,12 @@ public class MazeTraversal {
 		return false;
 	}
 	
+	/**
+	 * Prints all the nodes visited uptill now
+	 */
 	void printVisitedNodes()
 	{
+		System.out.println("Nodes Traversed : ");
 		StringBuilder builder = new StringBuilder();
 		for(MazeNode mn : visitedNodes)
 		{
@@ -129,11 +138,15 @@ public class MazeTraversal {
 		System.out.println(builder.toString());
 	}
 	
+	/**
+	 * Finds the nodes attached to the current node and traverses them in the order they are discovered
+	 * 
+	 * @param node current node
+	 */
 	void taverseMaze(MazeNode node)
 	{
 		if(success == false)
 		{
-			printVisitedNodes();
 			String URL = constructURL(node.x, node.y);
 			ArrayList<MazeNode> nextNodes;
 			try
@@ -161,8 +174,9 @@ public class MazeTraversal {
 				}
 				else
 				{
-					System.out.println("Reached the end of the maze " + urlBody);
-					System.out.println("URL: " + URL);
+					System.out.println("Reached the end of the maze ");
+					System.out.println("End URL: " + URL);
+					printVisitedNodes();
 					success = true;
 				}
 				in.close();
@@ -180,9 +194,14 @@ public class MazeTraversal {
 		
 	}
 	
+	/**
+	 * Starts the maze traversal. Initializes the variables that are needed.
+	 * Sarting point of the program
+	 */
 	void initMaze()
 	{
 		ArrayList<MazeNode> nextNodes;
+		System.out.println("Starting the Maze Traversal");
 		try
 		{
 			if(mazeURL == null)
@@ -190,9 +209,10 @@ public class MazeTraversal {
 				URLConnection con = new URL(baseURL).openConnection();
 				con.connect();
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-				setMazeURL(con.getURL().toString());
+				String startURL = con.getURL().toString();
+				setMazeURL(startURL);
+				System.out.println("Start URL : " + startURL);
 				String urlBody = in.readLine();		
-				System.out.println("Starting the Maze Traversal");
 				visitedNodes.add(new MazeNode(0, 0));
 				if(checkStatus(urlBody) == false)
 				{
@@ -229,7 +249,10 @@ public class MazeTraversal {
 		}
 	}
 	
-	
+	/**
+	 * Driver function
+	 * @param args
+	 */
 	public static void main(String args[])
 	{
 		MazeTraversal maze = new MazeTraversal();
